@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../models/transaction_model.dart';
 
 class CreateRecurringScreen extends StatefulWidget {
-
   const CreateRecurringScreen({super.key});
 
   @override
@@ -14,13 +13,24 @@ class _CreateRecurringScreenState extends State<CreateRecurringScreen> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
+  String selectedType = "Expense";
+
   void save(){
+
+    if(titleController.text.isEmpty || amountController.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please fill all fields"))
+      );
+      return;
+    }
 
     final transaction = TransactionModel(
       id: DateTime.now().toString(),
       title: titleController.text,
       amount: double.parse(amountController.text),
       categoryId: "Recurring",
+      type: selectedType,
+      notes: "",
       date: DateTime.now(),
     );
 
@@ -63,6 +73,27 @@ class _CreateRecurringScreenState extends State<CreateRecurringScreen> {
               ),
             ),
 
+            const SizedBox(height:20),
+
+            DropdownButtonFormField(
+              value: selectedType,
+              decoration: const InputDecoration(
+                labelText: "Transaction Type",
+                border: OutlineInputBorder(),
+              ),
+              items: ["Income","Expense"].map((type){
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (value){
+                setState(() {
+                  selectedType = value!;
+                });
+              },
+            ),
+
             const SizedBox(height:30),
 
             SizedBox(
@@ -81,5 +112,4 @@ class _CreateRecurringScreenState extends State<CreateRecurringScreen> {
     );
 
   }
-
 }
