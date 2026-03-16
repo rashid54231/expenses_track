@@ -3,7 +3,9 @@ import '../../../models/tag_model.dart';
 
 class CreateTagScreen extends StatefulWidget {
 
-  const CreateTagScreen({super.key});
+  final TagModel? tag;
+
+  const CreateTagScreen({super.key, this.tag});
 
   @override
   State<CreateTagScreen> createState() => _CreateTagScreenState();
@@ -13,11 +15,27 @@ class _CreateTagScreenState extends State<CreateTagScreen> {
 
   final nameController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+    if(widget.tag != null){
+      nameController.text = widget.tag!.name;
+    }
+  }
+
   void save(){
 
+    if(nameController.text.trim().isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Tag name required"))
+      );
+      return;
+    }
+
     final tag = TagModel(
-      id: DateTime.now().toString(),
-      name: nameController.text,
+      id: widget.tag?.id ?? DateTime.now().toString(),
+      name: nameController.text.trim(),
     );
 
     Navigator.pop(context, tag);
@@ -30,7 +48,7 @@ class _CreateTagScreenState extends State<CreateTagScreen> {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Create Tag"),
+        title: Text(widget.tag == null ? "Create Tag" : "Edit Tag"),
       ),
 
       body: Padding(
@@ -52,9 +70,10 @@ class _CreateTagScreenState extends State<CreateTagScreen> {
 
             SizedBox(
               width: double.infinity,
+              height: 50,
               child: ElevatedButton(
                 onPressed: save,
-                child: const Text("Save Tag"),
+                child: Text(widget.tag == null ? "Save Tag" : "Update Tag"),
               ),
             )
 

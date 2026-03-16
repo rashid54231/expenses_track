@@ -15,6 +15,17 @@ class _TagListScreenState extends State<TagListScreen> {
   final TagController controller = TagController();
 
   @override
+  void initState() {
+    super.initState();
+    controller.loadTags();
+  }
+
+  void deleteTag(String id){
+    controller.deleteTag(id);
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return Scaffold(
@@ -34,16 +45,22 @@ class _TagListScreenState extends State<TagListScreen> {
           );
 
           if(result != null){
-            setState(() {
-              controller.addTag(result);
-            });
+            controller.addTag(result);
+            setState(() {});
           }
 
         },
         child: const Icon(Icons.add),
       ),
 
-      body: ListView.builder(
+      body: controller.tags.isEmpty
+          ? const Center(
+        child: Text(
+          "No Tags Found",
+          style: TextStyle(fontSize: 16),
+        ),
+      )
+          : ListView.builder(
 
         itemCount: controller.tags.length,
 
@@ -51,9 +68,54 @@ class _TagListScreenState extends State<TagListScreen> {
 
           TagModel tag = controller.tags[index];
 
-          return ListTile(
-            leading: const Icon(Icons.label),
-            title: Text(tag.name),
+          return Card(
+
+            margin: const EdgeInsets.symmetric(
+                horizontal: 15, vertical: 8),
+
+            child: ListTile(
+
+              leading: const CircleAvatar(
+                child: Icon(Icons.label),
+              ),
+
+              title: Text(tag.name),
+
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () async {
+
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CreateTagScreen(tag: tag),
+                        ),
+                      );
+
+                      if(result != null){
+                        controller.updateTag(result);
+                        setState(() {});
+                      }
+
+                    },
+                  ),
+
+                  IconButton(
+                    icon: const Icon(Icons.delete,color: Colors.red),
+                    onPressed: (){
+                      deleteTag(tag.id);
+                    },
+                  ),
+
+                ],
+              ),
+
+            ),
+
           );
 
         },
