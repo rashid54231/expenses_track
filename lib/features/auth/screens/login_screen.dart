@@ -48,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
         child: Column(
 
+          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
 
             CustomTextField(
@@ -75,7 +77,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            // 👇 YEH NAYA ADD HUA HAI (Forgot Password)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: (){
+                  Navigator.pushNamed(
+                    context,
+                    RouteNames.forgotPassword,
+                  );
+                },
+                child: const Text("Forgot Password?"),
+              ),
+            ),
+
+            const SizedBox(height: 10),
 
             CustomButton(
               text: "Login",
