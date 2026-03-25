@@ -163,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         ),
                         Text(
-                          "John Doe",
+                          "Rashid",
                           style: TextStyle(
                             fontFamily: 'Georgia',
                             color: Color(0xFFF0EEF8),
